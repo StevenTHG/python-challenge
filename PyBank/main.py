@@ -11,10 +11,8 @@ total_months = 0
 total_net = 0
 profit_loss_list = []
 change_list = []
-greatest_incr = 0
-greatest_decr = 0
-incr_month = ''
-decr_month = ''
+month_list = []
+counter = 0
 
 # Open and read csv
 with open(budget_data_csv) as csv_file:
@@ -28,25 +26,22 @@ with open(budget_data_csv) as csv_file:
     total_months += 1
     total_net += int(first_row[1])
     profit_loss_list.append(int(first_row[1]))
-    greatest_incr = int(first_row[1])
-    greatest_decr = int(first_row[1])
+    month_list.append(first_row[0])
 
     # Read through each row of data after the first row and update variables
     for row in csv_reader:
-
         total_months += 1
+        month_list.append(row[0])
         total_net += int(row[1])
         profit_loss_list.append(int(row[1]))
-        if int(row[1]) > greatest_incr:
-            incr_month = row[0]
-            greatest_incr = int(row[1])
-        if int(row[1]) < greatest_decr:
-            decr_month = row[0]
-            greatest_decr = int(row[1])
+        change_list.append(profit_loss_list[counter+1] - profit_loss_list[counter])
+        counter += 1
 
-# Calculate changes in profit/loss from month to month
-for i in range(len(profit_loss_list)-1):
-    change_list.append(profit_loss_list[i+1] - profit_loss_list[i])
+# Calculates the greatest increase/decrease and which month it occurred in
+incr_month = month_list[change_list.index(max(change_list))+1]
+greatest_incr = max(change_list)
+decr_month = month_list[change_list.index(min(change_list))+1]
+greatest_decr = min(change_list)
 
 # Calculate average change
 average_change = sum(change_list) / len(change_list)
